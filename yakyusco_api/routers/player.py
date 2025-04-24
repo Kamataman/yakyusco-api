@@ -1,12 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
-# 順番にインポートする必要がある
-from ..models.team import Team, TeamCreate, TeamRead
-from ..models.player import Player, PlayerCreate, PlayerRead, PlayerReadWithTeam
-
+from ..models import Player, PlayerCreate, PlayerRead, PlayerReadWithTeam
 from ..db import SessionDep
 
 router = APIRouter()
+
 
 @router.get("/players/", response_model=list[PlayerRead])
 def read_players(
@@ -17,15 +15,17 @@ def read_players(
     players = session.exec(select(Player).offset(offset).limit(limit)).all()
     return players
 
-@router.get("/players/{player_id}", response_model=PlayerRead)
+
+@router.get("/players/{player_id}", response_model=PlayerReadWithTeam)
 def read_player(
     player_id: int,
     session: SessionDep,
-) -> PlayerRead:
+) -> PlayerReadWithTeam:
     player = session.get(Player, player_id)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
     return player
+
 
 @router.post("/players/", response_model=PlayerRead)
 def create_player(

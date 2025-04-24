@@ -1,9 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy.orm import Mapped
-from typing import TYPE_CHECKING, Optional, List
-
-if TYPE_CHECKING:
-    from .player import Player
+from sqlalchemy.orm import relationship
+from typing import Optional, List
 
 
 class TeamBase(SQLModel):
@@ -26,6 +23,6 @@ class Team(TeamBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     # Relationship を正しく定義
-    players: List["Player"] = Relationship(back_populates="team")
-
-
+    players: List["Player"] = Relationship(
+        sa_relationship=relationship(back_populates="team")
+    )

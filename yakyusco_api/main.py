@@ -1,10 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-print("before load")
-from .models.team import Team, TeamCreate, TeamRead
-from .models.player import Player, PlayerCreate, PlayerRead, PlayerReadWithTeam
-print("after load")
 
 from .db import create_db_and_tables
 from .routers import player
@@ -21,9 +17,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(player.router)
 
+
 @app.get("/")
 async def read_main():
     return {"msg": "Hello Yakyusco API !!"}
+
 
 origins = [
     "http://localhost",

@@ -20,6 +20,4 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 
 def create_db_and_tables():
-    from .models.team import Team, TeamCreate, TeamRead
-    from .models.player import Player, PlayerCreate, PlayerRead, PlayerReadWithTeam
     SQLModel.metadata.create_all(engine)

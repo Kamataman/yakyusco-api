@@ -1,10 +1,6 @@
-from __future__ import annotations  # Python 3.7+ で必要な前方参照のサポート
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy.orm import Mapped
-from typing import TYPE_CHECKING, Optional
-
-if TYPE_CHECKING:
-    from .team import Team
+from sqlalchemy.orm import relationship
+from typing import Optional
 
 
 class PlayerBase(SQLModel):
@@ -36,4 +32,6 @@ class Player(PlayerBase, table=True):
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
 
     # Relationship を正しく定義
-    team: Optional["Team"] = Relationship(back_populates="players")
+    team: Optional["Team"] = Relationship(
+        sa_relationship=relationship(back_populates="players")
+    )
