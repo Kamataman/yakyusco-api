@@ -15,6 +15,6 @@ from .player import  Player, PlayerBase, PlayerCreate, PlayerRead, PlayerReadWit
 #     "PlayerUpdate",
 # ]
 
-# PlayerReadWithTeam.model_rebuild()
+PlayerReadWithTeam.model_rebuild()
 Player.model_rebuild()
 Team.model_rebuild()
