@@ -7,7 +7,6 @@ from decouple import config
 DATABASE_URL = config("DATABASE_URL")
 ECHO_LOG = config("ECHO_LOG", cast=bool, default=True)
 
-connect_args = {"check_same_thread": False}
 engine = create_engine(DATABASE_URL, echo=ECHO_LOG)
 
 

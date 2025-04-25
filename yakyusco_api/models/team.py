@@ -4,7 +4,10 @@ from typing import Optional, List
 
 
 class TeamBase(SQLModel):
-    name: str
+    id: str = Field(
+        default=None, primary_key=True, unique=True, regex=r"^[a-zA-Z0-9]{1,10}$"
+    )
+    team_name: str
 
 
 class TeamCreate(TeamBase):
@@ -12,17 +15,15 @@ class TeamCreate(TeamBase):
 
 
 class TeamRead(TeamBase):
-    id: int
+    pass
 
 
 class TeamUpdate(SQLModel):
-    name: Optional[str] = None
+    team_name: Optional[str] = None
 
 
 class Team(TeamBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-
-    # Relationship を正しく定義
     players: List["Player"] = Relationship(
         sa_relationship=relationship(back_populates="team")
     )
+    game_results: List["GameResult"] = Relationship(back_populates="team")

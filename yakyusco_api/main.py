@@ -1,9 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
 
 from .db import create_db_and_tables
-from .routers import player
+from .routers import player, team,game
 
 
 @asynccontextmanager
@@ -16,6 +18,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(player.router)
+app.include_router(team.router)
+app.include_router(game.router)
 
 
 @app.get("/")
@@ -35,3 +39,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(IntegrityError)
+async def integrity_error_handler(request: Request, exc: IntegrityError):
+    print(exc.orig)
+    return JSONResponse(
+        status_code=400,
+        content={"detail": "Integrity error occurred"},
+    )

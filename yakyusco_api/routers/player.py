@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
-from ..models import Player, PlayerCreate, PlayerRead, PlayerReadWithTeam
+from ..models.player import Player, PlayerCreate, PlayerRead, PlayerReadWithTeam
 from ..db import SessionDep
 
 router = APIRouter()
