@@ -4,6 +4,7 @@ from sqlmodel import select
 from ..models.game import (
     GameResult,
     GameResultRead,
+    GameResultReadWithDetail,
     GameResultCreate,
     BattingResult,
     PitchingResult,
@@ -15,32 +16,38 @@ from ..db import SessionDep
 router = APIRouter()
 
 
-@router.get("/gameresults/", response_model=list[GameResultRead])
-def read_teams(
+@router.get("/teams/{team_id}/gameresults/", response_model=list[GameResultRead])
+def read_gameresults(
+    team_id: str,
     session: SessionDep,
     offset: int = 0,
     limit: int = 100,
 ) -> list[GameResultRead]:
-    teams = session.exec(select(GameResult).offset(offset).limit(limit)).all()
+    teams = session.exec(
+        select(GameResult)
+        .where(GameResult.team_id == team_id)
+        .offset(offset)
+        .limit(limit)
+    ).all()
     return teams
 
 
-@router.get("/gameresults/{gameresult_id}", response_model=GameResultRead)
-def read_team(
+@router.get("/gameresults/{gameresult_id}", response_model=GameResultReadWithDetail)
+def read_gameresult(
     gameresult_id: str,
     session: SessionDep,
-) -> GameResultRead:
-    gameresult = session.get(GameResult, gameresult_id)
-    if not gameresult:
+) -> GameResultReadWithDetail:
+    db_gameresult = session.get(GameResult, gameresult_id)
+    if not db_gameresult:
         raise HTTPException(status_code=404, detail="GameResult not found")
-    return gameresult
+    return db_gameresult
 
 
-@router.post("/gameresults/", response_model=GameResultRead)
-def create_team(
+@router.post("/gameresults/", response_model=GameResultReadWithDetail)
+def create_gameresult(
     gameresult: GameResultCreate,
     session: SessionDep,
-) -> GameResultRead:
+) -> GameResultReadWithDetail:
 
     # BattingResult の変換と追加
     if gameresult.batting_results:
@@ -69,3 +76,13 @@ def create_team(
     session.commit()
     session.refresh(db_gameresult)
     return db_gameresult
+
+
+@router.delete("/gameresults/{gameresult_id}")
+def delete_gameresult(gameresult_id: int, session: SessionDep):
+    db_gameresult = session.get(GameResult, gameresult_id)
+    if not db_gameresult:
+        raise HTTPException(status_code=404, detail="Gameresult not found")
+    session.delete(db_gameresult)
+    session.commit()
+    return {"message": "Gameresult deleted successfully"}

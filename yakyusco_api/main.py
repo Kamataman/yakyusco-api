@@ -17,12 +17,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(player.router)
-app.include_router(team.router)
-app.include_router(game.router)
+app.include_router(player.router,tags=["Players"])
+app.include_router(team.router,tags=["Teams"])
+app.include_router(game.router,tags=["Gameresults"])
 
 
-@app.get("/")
+@app.get("/",tags=["Ping"])
 async def read_main():
     return {"msg": "Hello Yakyusco API !!"}
 

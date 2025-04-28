@@ -4,8 +4,10 @@ from typing import List, Optional
 
 
 class PlayerBase(SQLModel):
-    name: str
-    number: str = Field(regex=r"^[0-9]{1,3}$")
+    name: str = Field(max_length=50)
+    number: str = Field(
+        schema_extra={"pattern": r"^[0-9]{1,3}$"}, min_length=1, max_length=3
+    )
 
 
 class PlayerCreate(PlayerBase):
@@ -16,15 +18,9 @@ class PlayerRead(PlayerBase):
     id: int
 
 
-class PlayerReadWithTeam(PlayerRead):  # 新しいクラスを追加
-    team: Optional["Team"] = None
-
-
 class PlayerUpdate(SQLModel):
     name: Optional[str] = None
-    age: Optional[int] = None
-    team: Optional[str] = None
-    position: Optional[str] = None
+    number: Optional[str] = None
 
 
 class Player(PlayerBase, table=True):

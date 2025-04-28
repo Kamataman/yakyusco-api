@@ -5,9 +5,13 @@ from typing import Optional, List
 
 class TeamBase(SQLModel):
     id: str = Field(
-        default=None, primary_key=True, unique=True, regex=r"^[a-zA-Z0-9]{1,10}$"
+        default=None,
+        primary_key=True,
+        unique=True,
+        schema_extra={"pattern": r"^[a-z0-9]+$"},
+        max_length=20,
     )
-    team_name: str
+    team_name: str=Field(max_length=30)
 
 
 class TeamCreate(TeamBase):
