@@ -90,14 +90,7 @@ class GameResult(GameResultBase, table=True):
     atbat_results: List["AtbatResult"] = Relationship(back_populates="game_result")
 
 
-class PlayerResultBase(SQLModel):
-    player_number: str = Field(
-        schema_extra={"pattern": r"^[0-9]{1,3}$"}, min_length=1, max_length=3
-    )
-    player_name: str = Field(max_length=50)
-
-
-class BattingResultBase(PlayerResultBase):
+class BattingResultBase(SQLModel):
     batting_order: int  # 配列の順番にしたい
     batting_order_num: int
     rbi: int = Field(ge=0)
@@ -137,7 +130,7 @@ class BattingResult(BattingResultBase, table=True):
     )
 
 
-class PitchingResultBase(PlayerResultBase):
+class PitchingResultBase(SQLModel):
     innings: int = Field(ge=0)
     pitchs: int = Field(ge=0)
     batters: int = Field(ge=0)
@@ -177,7 +170,7 @@ class PitchingResult(PitchingResultBase, table=True):
 class AtbatResultBase(SQLModel):
     inning: int
     result: str
-    position: int
+    position: Optional[int] = Field(default=None)
     is_scpos: bool
 
 
