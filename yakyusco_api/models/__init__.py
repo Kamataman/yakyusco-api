@@ -4,6 +4,7 @@ from .game import (
     GameResult,
     GameResultRead,
     GameResultCreate,
+    GameResultUpdate,
     BattingResult,
     PitchingResult,
     AtbatResult,

@@ -63,6 +63,24 @@ class GameResultRead(GameResultBase):
     id: int
 
 
+class GameResultUpdate(SQLModel):
+    is_ff: Optional[bool] = None
+    date: Optional[datetime] = None
+    bf_Team_name: Optional[str] = Field(max_length=30, default=None)
+    ff_Team_name: Optional[str] = Field(max_length=30, default=None)
+    winlose: Optional[WinloseEnum] = None
+    review: Optional[str] = Field(max_length=300, default=None)
+    place: Optional[str] = Field(max_length=30, default=None)
+    innings: Optional[int] = Field(ge=0, lt=15, default=None)
+    bf_runs: Optional[List[int]] = Field(sa_column=Column(ARRAY(Integer)), default=None)
+    ff_runs: Optional[List[int]] = Field(sa_column=Column(ARRAY(Integer)), default=None)
+    bf_total_runs: Optional[int] = Field(ge=0, default=None)
+    ff_total_runs: Optional[int] = Field(ge=0, default=None)
+    is_X: Optional[bool] = None
+    batting_results: List["BattingResultCreate"] = None
+    pitching_results: List["PitchingResultCreate"] = None
+
+
 class GameResultReadWithDetail(GameResultRead):
     batting_results: List["BattingResultRead"] = None
     pitching_results: List["PitchingResultRead"] = None
