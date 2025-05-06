@@ -1,7 +1,7 @@
 from enum import Enum
 from operator import and_
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.orm import relationship, foreign
 from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 from typing import Optional, List
@@ -40,7 +40,7 @@ class PicherResultEnum(Enum):
 class GameResultBase(SQLModel):
     team_id: str = Field(foreign_key="team.id")
     is_ff: bool
-    date: datetime
+    date: datetime=Field(sa_column=Column(DateTime(timezone=True)))
     bf_Team_name: str = Field(max_length=30)
     ff_Team_name: str = Field(max_length=30)
     winlose: WinloseEnum
