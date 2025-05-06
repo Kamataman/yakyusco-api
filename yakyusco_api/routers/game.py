@@ -27,6 +27,7 @@ def read_gameresults(
     teams = session.exec(
         select(GameResult)
         .where(GameResult.team_id == team_id)
+        .order_by(GameResult.date.desc())
         .offset(offset)
         .limit(limit)
     ).all()

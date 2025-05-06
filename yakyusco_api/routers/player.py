@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from sqlmodel import select
+from sqlmodel import Integer, cast, select
 from ..models.player import (
     Player,
     PlayerCreate,
@@ -19,7 +19,11 @@ def read_players(
     limit: int = 100,
 ) -> list[PlayerRead]:
     players = session.exec(
-        select(Player).where(Player.team_id == team_id).offset(offset).limit(limit)
+        select(Player)
+        .where(Player.team_id == team_id)
+        .order_by(cast(Player.number, Integer))
+        .offset(offset)
+        .limit(limit)
     ).all()
     return players
 
