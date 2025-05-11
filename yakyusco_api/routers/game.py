@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
-from ..models.game import (
+from models.game import (
     GameResult,
     GameResultRead,
     GameResultReadWithDetail,
@@ -12,7 +12,7 @@ from ..models.game import (
     AtbatResult,
 )
 
-from ..db import SessionDep
+from db import SessionDep
 
 router = APIRouter()
 

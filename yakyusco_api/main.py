@@ -4,8 +4,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
 
-from .db import create_db_and_tables
-from .routers import player, team,game
+from db import create_db_and_tables
+from routers import player, team, game
 
 
 @asynccontextmanager
@@ -17,12 +17,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(player.router,tags=["Players"])
-app.include_router(team.router,tags=["Teams"])
-app.include_router(game.router,tags=["Gameresults"])
+app.include_router(player.router, tags=["Players"])
+app.include_router(team.router, tags=["Teams"])
+app.include_router(game.router, tags=["Gameresults"])
 
 
-@app.get("/",tags=["Ping"])
+@app.get("/", tags=["Ping"])
 async def read_main():
     return {"msg": "Hello Yakyusco API !!"}
 

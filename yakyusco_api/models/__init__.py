@@ -1,6 +1,12 @@
-from .team import Team, TeamBase, TeamCreate, TeamRead, TeamUpdate
-from .player import Player, PlayerBase, PlayerCreate, PlayerRead, PlayerUpdate
-from .game import (
+from models.team import Team, TeamBase, TeamCreate, TeamRead, TeamUpdate
+from models.player import (
+    Player,
+    PlayerBase,
+    PlayerCreate,
+    PlayerRead,
+    PlayerUpdate,
+)
+from models.game import (
     GameResult,
     GameResultRead,
     GameResultCreate,
