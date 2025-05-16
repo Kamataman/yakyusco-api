@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import select
 
 from models.game import (
@@ -13,6 +13,7 @@ from models.game import (
 )
 
 from db import SessionDep
+from auth import authorize_user, get_current_user
 
 router = APIRouter()
 
@@ -47,9 +48,10 @@ def read_gameresult(
 
 @router.post("/gameresults/", response_model=GameResultReadWithDetail)
 def create_gameresult(
-    gameresult: GameResultCreate,
-    session: SessionDep,
+    gameresult: GameResultCreate, session: SessionDep, uid=Depends(get_current_user)
 ) -> GameResultReadWithDetail:
+
+    authorize_user(uid, gameresult.team_id)
 
     # BattingResult の変換と追加
     if gameresult.batting_results:
@@ -85,10 +87,12 @@ def update_gameresult(
     gameresult_id: int,
     update_gameresult: GameResultUpdate,
     session: SessionDep,
+    uid=Depends(get_current_user),
 ) -> GameResultReadWithDetail:
     db_gameresult = session.get(GameResult, gameresult_id)
     if not db_gameresult:
         raise HTTPException(status_code=404, detail="Gameresult not found")
+    authorize_user(uid, db_gameresult.team_id)
 
     # BattingResult の変換と追加
     if update_gameresult.batting_results:
@@ -124,10 +128,14 @@ def update_gameresult(
 
 
 @router.delete("/gameresults/{gameresult_id}")
-def delete_gameresult(gameresult_id: int, session: SessionDep):
+def delete_gameresult(
+    gameresult_id: int, session: SessionDep, uid=Depends(get_current_user)
+):
     db_gameresult = session.get(GameResult, gameresult_id)
     if not db_gameresult:
         raise HTTPException(status_code=404, detail="Gameresult not found")
+    authorize_user(uid, db_gameresult.team_id)
+
     session.delete(db_gameresult)
     session.commit()
     return {"message": "Gameresult deleted successfully"}

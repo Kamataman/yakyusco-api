@@ -11,7 +11,8 @@ class TeamBase(SQLModel):
         schema_extra={"pattern": r"^[a-z0-9]+$"},
         max_length=20,
     )
-    team_name: str=Field(max_length=30)
+    team_name: str = Field(max_length=30)
+    description: str = Field(max_length=1000)
 
 
 class TeamCreate(TeamBase):
@@ -24,6 +25,7 @@ class TeamRead(TeamBase):
 
 class TeamUpdate(SQLModel):
     team_name: Optional[str] = None
+    description: Optional[str] = None
 
 
 class Team(TeamBase, table=True):
