@@ -37,10 +37,35 @@ class PicherResultEnum(Enum):
     NOTHING = "-"
 
 
+class AtbatResultEnum(Enum):
+    SH = "SH"
+    DH = "DH"
+    TH = "TH"
+    HR = "HR"
+    RH = "RH"
+    SB = "SB"
+    SF = "SF"
+    DP = "DP"
+    GO = "GO"
+    FO = "FO"
+    LO = "LO"
+    MP = "MP"
+    FF = "FF"
+    FC = "FC"
+    KO = "KO"
+    MK = "MK"
+    BB = "BB"
+    IB = "IB"
+    HP = "HP"
+    DT = "DT"
+    BI = "BI"
+    RI = "RI"
+
+
 class GameResultBase(SQLModel):
     team_id: str = Field(foreign_key="team.id")
     is_ff: bool
-    date: datetime=Field(sa_column=Column(DateTime(timezone=True)))
+    date: datetime = Field(sa_column=Column(DateTime(timezone=True)))
     bf_Team_name: str = Field(max_length=30)
     ff_Team_name: str = Field(max_length=30)
     winlose: WinloseEnum
@@ -187,7 +212,7 @@ class PitchingResult(PitchingResultBase, table=True):
 
 class AtbatResultBase(SQLModel):
     inning: int
-    result: str
+    result: AtbatResultEnum
     position: Optional[int] = Field(default=None)
     is_scpos: bool
 

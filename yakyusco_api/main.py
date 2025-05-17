@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
 
 from db import create_db_and_tables
-from routers import player, team, game
+from routers import player, team, game, stats
 
 
 @asynccontextmanager
@@ -20,6 +20,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(player.router, tags=["Players"])
 app.include_router(team.router, tags=["Teams"])
 app.include_router(game.router, tags=["Gameresults"])
+app.include_router(stats.router, tags=["Stats"])
 
 
 @app.get("/", tags=["Ping"])
