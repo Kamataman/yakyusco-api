@@ -262,6 +262,11 @@ class PitchingStatsRead(StatsBase):
         self.loses = loses
         self.holds = holds
         self.saves = saves
+        self.win_pct=(
+            round(wins / (wins + loses), 2)
+            if wins + loses != 0
+            else "-"
+        )
         self.innings = innings
         self.pitchs = pitchs
         self.batters = batters
