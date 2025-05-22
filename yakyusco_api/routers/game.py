@@ -94,6 +94,14 @@ def update_gameresult(
         raise HTTPException(status_code=404, detail="Gameresult not found")
     authorize_user(uid, db_gameresult.team_id)
 
+    # 既存のbatting_results/pitching_results/atbat_resultsをクリア
+    for batting_result in db_gameresult.batting_results:
+        batting_result.atbat_results.clear()
+    session.flush()
+    db_gameresult.batting_results.clear()
+    db_gameresult.pitching_results.clear()
+    session.flush()
+
     # BattingResult の変換と追加
     if update_gameresult.batting_results:
         validated_batting_results = []
@@ -121,6 +129,8 @@ def update_gameresult(
 
     gameresult_data = update_gameresult.model_dump(exclude_unset=True)
     db_gameresult.sqlmodel_update(gameresult_data)
+    db_gameresult.batting_results = update_gameresult.batting_results
+    db_gameresult.pitching_results = update_gameresult.pitching_results
     session.add(db_gameresult)
     session.commit()
     session.refresh(db_gameresult)

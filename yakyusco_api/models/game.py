@@ -169,6 +169,7 @@ class BattingResult(BattingResultBase, table=True):
             ),
             # back_populates="batting_result",
             order_by="AtbatResult.num_atbat",
+            cascade="all, delete-orphan",
         )
     )
 
