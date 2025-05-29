@@ -3,9 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
+from mangum import Mangum
 
 from db import create_db_and_tables
 from routers import player, team, game, stats
+from auth import initialize_firebase
 
 
 @asynccontextmanager
@@ -49,3 +51,8 @@ async def integrity_error_handler(request: Request, exc: IntegrityError):
         status_code=400,
         content={"detail": "Integrity error occurred"},
     )
+
+
+initialize_firebase()
+
+handler = Mangum(app)

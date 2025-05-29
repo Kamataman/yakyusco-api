@@ -5,7 +5,7 @@ from decouple import config
 
 # 環境変数から設定を読み込む
 DATABASE_URL = config("DATABASE_URL")
-ECHO_LOG = config("ECHO_LOG", cast=bool, default=True)
+ECHO_LOG = config("ECHO_LOG", cast=bool, default=False)
 
 engine = create_engine(DATABASE_URL, echo=ECHO_LOG)
 

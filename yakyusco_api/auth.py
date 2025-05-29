@@ -5,8 +5,29 @@ import firebase_admin
 from firebase_admin import credentials, auth
 from decouple import config
 
-cred = credentials.Certificate(config("GOOGLE_APPLICATION_CREDENTIALS"))
-firebase_admin.initialize_app(cred)
+
+# Firebase Admin SDKの初期化
+def initialize_firebase():
+    if config("ENVIRONMENT", default="LOCAL") == "LOCAL":
+        # ローカルでは、ファイルパスを環境変数から取得
+        cred = credentials.Certificate(config("GOOGLE_APPLICATION_CREDENTIALS"))
+    else:
+        # Lambdaなどでは、S3からクレデンシャルを取得
+        import json
+        import boto3
+
+        s3 = boto3.client("s3")
+        bucket_name = config("CREDENTIALS_BUCKET")
+        object_key = config("CREDENTIALS_OBJECT_KEY")
+
+        response = s3.get_object(Bucket=bucket_name, Key=object_key)
+        json_bytes = response["Body"].read()
+
+        # バイトを文字列に変換してJSONロード
+        json_dict = json.loads(json_bytes.decode("utf-8"))
+        cred = credentials.Certificate(json_dict)
+
+    firebase_admin.initialize_app(cred)
 
 
 def set_custom_claims(uid: str, team_id: str):

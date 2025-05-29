@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  samtest
+
+  Sample SAM Template for samtest
+
+Parameters:
+  credentialsBucket:
+    Type: String
+    Default: yakyusco-files
+  credentialsObjectKey:
+    Type: String
+    Default: cred/yakyusco-firebase-adminsdk-5qoih-3f5edd7bd2.json
+
+Resources:
+  YakyuscoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: yakyusco_api/
+      Handler: main.handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Timeout: 60
+      Environment:
+        Variables:
+          ENVIRONMENT: Production
+          CREDENTIALS_BUCKET: !Ref credentialsBucket
+          CREDENTIALS_OBJECT_KEY: !Ref credentialsObjectKey
+          DATABASE_URL: !Sub "{{resolve:ssm:/yakyusco_api/database_url}}"
+      Policies: 
+        - S3ReadPolicy:
+            BucketName: !Ref credentialsBucket
+      Events:
+        all:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            RestApiId: !Ref YakyuscoAPI
+            Path: /{proxy+}
+            Method: ANY
+
+  YakyuscoAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: YakyuscoAPI
+      StageName: Prod
+      Domain:
+        DomainName: yakyusco.kmtmn.net
+        CertificateArn: arn:aws:acm:ap-northeast-1:006668618220:certificate/bde41fe2-6b3a-4028-9b6d-c287d0bf3dcf
+        EndpointConfiguration: REGIONAL
